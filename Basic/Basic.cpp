@@ -1,7 +1,7 @@
 /*
  * File: Basic.cpp
  * ---------------
- * Name: [TODO: enter name here]
+ * Name: [TODO: happypig]
  * Section: [TODO: enter section leader here]
  * This file is the starter project for the BASIC interpreter from
  * Assignment #6.
@@ -59,9 +59,46 @@ void processLine(string line, Program & program, EvalState & state) {
    TokenScanner scanner;
    scanner.ignoreWhitespace();
    scanner.scanNumbers();
-   scanner.setInput(line);
-   Expression *exp = parseExp(scanner);
-   int value = exp->eval(state);
-   cout << value << endl;
-   delete exp;
+   scanner.setInput(line); // 输入流已设置
+   //todo:
+   string token; TokenType token_type;
+   if(scanner.hasMoreTokens()) token = scanner.nextToken();
+   else return;
+   token_type = scanner.getTokenType(token);
+   if(token_type == NUMBER){
+       if(!scanner.hasMoreTokens()){return;} //todo:将program中一行删除
+       //todo:将line当作一行命令处理进入program
+       try{
+           Statement *stmt = parseStmt(scanner);
+//           if()
+       } catch (...) {
+
+       }
+   }else if(token_type == WORD){
+       if(token == "RUN"){
+           //todo
+       }
+       if(token == "LIST"){
+           //todo
+       }
+       if(token == "ClEAR"){
+           //todo
+       }
+       if(token == "QUIT"){
+           //todo
+       }
+       if(token == "HELP"){
+           //todo
+       }
+       if(token == "LET" || token == "PRINT" || token == "INPUT"){
+
+       }
+       //todo:SYNTAX ERROR
+   }else{
+       //todo:SYNTAX ERROR
+   }
+//   Expression *exp = parseExp(scanner);
+//   int value = exp->eval(state);
+//   cout << value << endl;
+//   delete exp;
 }

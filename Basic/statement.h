@@ -75,4 +75,44 @@ public:
  * specify its own destructor method to free that memory.
  */
 
+class REM_statement: public Statement{
+public:
+    REM_statement();
+    ~REM_statement() override;
+    void execute(EvalState & state) override;
+};
+
+class INPUT_statement: public Statement{
+public:
+    explicit INPUT_statement(string &x) ;
+    ~INPUT_statement() override;
+    void execute(EvalState & state) override;
+private:
+    string var_name; ///必须保证构造合法 在parser里面添加一个parseStatement吧
+};
+
+class PRINT_statement: public Statement{
+public:
+    explicit PRINT_statement(Expression *exp);
+    ~PRINT_statement() override;
+    void execute(EvalState & state) override;
+private:
+    Expression * exp;
+};
+
+class END_statement: public Statement{
+public:
+    END_statement();
+    ~END_statement() override;
+    void execute(EvalState & state) override;
+};
+
+class LET_statement: public Statement{
+public:
+    explicit LET_statement(Expression * exp);
+    ~LET_statement() override;
+    void execute(EvalState & state) override;
+private:
+    Expression * exp;
+};
 #endif

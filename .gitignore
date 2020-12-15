@@ -1,0 +1,10 @@
+/Test/
+/CMakeLists.txt
+/makefile-for-judge
+/StanfordCPPLib/
+/Demo/
+/cmake-build-debug/
+/.idea/modules.xml
+/.idea/misc.xml
+/.idea/Basic_interpreter.iml
+/.idea/.gitignore

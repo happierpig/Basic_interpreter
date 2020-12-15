@@ -97,7 +97,7 @@ CompoundExp::CompoundExp(string op, Expression *lhs, Expression *rhs) {
    this->lhs = lhs;
    this->rhs = rhs;
 }
-
+//tree delete
 CompoundExp::~CompoundExp() {
    delete lhs;
    delete rhs;

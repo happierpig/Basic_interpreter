@@ -11,6 +11,8 @@
 #include "exp.h"
 
 #include "../StanfordCPPLib/tokenscanner.h"
+#include "statement.h"
+
 
 /*
  * Function: parseExp
@@ -54,4 +56,5 @@ Expression *readT(TokenScanner & scanner);
 
 int precedence(std::string token);
 
+Statement *parseStmt(TokenScanner & scanner);
 #endif

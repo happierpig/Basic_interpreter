@@ -13,17 +13,21 @@
 #include "../StanfordCPPLib/error.h"
 #include "../StanfordCPPLib/strlib.h"
 #include "../StanfordCPPLib/tokenscanner.h"
+#include "statement.h"
+
 using namespace std;
 
 /*
  * Implementation notes: parseExp
  * ------------------------------
  * This code just reads an expression and then checks for extra tokens.
+ * 大量抛出需要处理
  */
 
 Expression *parseExp(TokenScanner & scanner) {
    Expression *exp = readE(scanner);
    if (scanner.hasMoreTokens()) {
+       delete exp;///有待验证
       error("parseExp: Found extra token: " + scanner.nextToken());
    }
    return exp;
@@ -86,4 +90,40 @@ int precedence(string token) {
    if (token == "+" || token == "-") return 2;
    if (token == "*" || token == "/") return 3;
    return 0;
+}
+
+Statement *parseStmt(TokenScanner & scanner){
+    string token = scanner.nextToken(); TokenType token_type = scanner.getTokenType(token);
+    Expression * exp = nullptr;
+    if(token_type != WORD){
+        error("[Warning] SYNTAX ERROR");
+    }else if(token == "PRINT"){
+        exp = parseExp(scanner);//if failed ,need to be freed
+        if(exp->getType() == COMPOUND){
+            if(((CompoundExp *)exp)->getOp() == "="){delete exp;error("[Warning] SYNTAX ERROR");}
+        }
+        return new PRINT_statement(exp);
+    }else if(token == "INPUT"){
+        if(!scanner.hasMoreTokens()){error("[Warning] SYNTAX ERROR");}
+        token = scanner.nextToken();token_type = scanner.getTokenType(token);
+        if(token_type != WORD){error("[Warning] SYNTAX ERROR");}
+        if(scanner.hasMoreTokens()){error("[Warning] SYNTAX ERROR");}
+        return new INPUT_statement(token);
+    }else if(token == "REM"){
+        return new REM_statement();
+    }else if(token == "END"){
+        if(scanner.hasMoreTokens()){error("[Warning] SYNTAX ERROR");}
+        return new END_statement();
+    }else if(token == "LET"){
+        if(!scanner.hasMoreTokens()){error("[Warning] SYNTAX ERROR");}
+        exp = parseExp(scanner);
+        if(exp->getType() != COMPOUND){delete exp;error("[Warning] SYNTAX ERROR");}
+        if(((CompoundExp *)exp)->getOp() != "="){delete exp;error("[Warning] SYNTAX ERROR");}
+        return new LET_statement(exp);
+    }else if(token == "GOTO"){
+        //todo:
+    }else if(token == "IF"){
+        //todo:
+    }
+    error("[Warning] SYNTAX ERROR");
 }
