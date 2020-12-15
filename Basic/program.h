@@ -10,6 +10,7 @@
 
 #include <string>
 #include "statement.h"
+#include <map>
 using namespace std;
 
 /*
@@ -135,10 +136,20 @@ public:
 
    int getNextLineNumber(int lineNumber);
 
+   bool isContained(int lineNumber);
+
+   void showList();
+
+   void runProgram(EvalState &state);
 private:
-
-// Fill this in with whatever types and instance variables you need
-
+    struct Line{
+        string source_Line;
+        Statement * stmt = nullptr;
+        Line() = default;
+        explicit Line(string &x):source_Line(x){}
+        Line(string &x,Statement *y):source_Line(x),stmt(y){}
+    };
+    map<int,Line> LineTable;
 };
 
 #endif

@@ -119,6 +119,7 @@ Statement *parseStmt(TokenScanner & scanner){
         exp = parseExp(scanner);
         if(exp->getType() != COMPOUND){delete exp;error("[Warning] SYNTAX ERROR");}
         if(((CompoundExp *)exp)->getOp() != "="){delete exp;error("[Warning] SYNTAX ERROR");}
+        if((((CompoundExp *)exp)->getLHS())->getType() != IDENTIFIER){delete exp;error("[Warning] SYNTAX ERROR");}
         return new LET_statement(exp);
     }else if(token == "GOTO"){
         //todo:

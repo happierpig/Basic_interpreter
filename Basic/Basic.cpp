@@ -59,43 +59,63 @@ void processLine(string line, Program & program, EvalState & state) {
    TokenScanner scanner;
    scanner.ignoreWhitespace();
    scanner.scanNumbers();
-   scanner.setInput(line); // 输入流已设置
+   scanner.setInput(line); // 输入流已设置    值传入
    //todo:
    string token; TokenType token_type;
    if(scanner.hasMoreTokens()) token = scanner.nextToken();
    else return;
    token_type = scanner.getTokenType(token);
    if(token_type == NUMBER){
-       if(!scanner.hasMoreTokens()){return;} //todo:将program中一行删除
-       //todo:将line当作一行命令处理进入program
+       int lineNumber = stringToInteger(token);
+       if(!scanner.hasMoreTokens()){
+           program.removeSourceLine(lineNumber);
+           return;
+       }
        try{
            Statement *stmt = parseStmt(scanner);
-//           if()
+           program.addSourceLine(lineNumber,line); program.setParsedStatement(lineNumber,stmt);
+           return;
        } catch (...) {
-
+           cout << "SYNTAX ERROR" << endl;
+           return;
        }
    }else if(token_type == WORD){
        if(token == "RUN"){
+           if(scanner.hasMoreTokens()){cout << "SYNTAX ERROR" << endl;return;}
+           try {
+               program.runProgram(state);
+           } catch (ErrorException &ex) {
+               if(ex.getMessage() == "[tag] end") {
+                   return;
+               }else{
+                   cout << "VARIABLE NOT DEFINED" << endl; return;
+               }
+           }
+       }
+       else if(token == "LIST"){
+           if(scanner.hasMoreTokens()){cout << "SYNTAX ERROR" << endl;return;}
+           program.showList();
+       }
+       else if(token == "CLEAR"){
+           if(scanner.hasMoreTokens()){cout << "SYNTAX ERROR" << endl;return;}
+           program.clear();
+           return;
+       }
+       else if(token == "QUIT"){
+           exit(0);
+       }
+       else if(token == "HELP"){
            //todo
        }
-       if(token == "LIST"){
+       else if(token == "LET" || token == "PRINT" || token == "INPUT"){
            //todo
+       }else{
+           cout << "SYNTAX ERROR" << endl;
+           return;
        }
-       if(token == "ClEAR"){
-           //todo
-       }
-       if(token == "QUIT"){
-           //todo
-       }
-       if(token == "HELP"){
-           //todo
-       }
-       if(token == "LET" || token == "PRINT" || token == "INPUT"){
-
-       }
-       //todo:SYNTAX ERROR
    }else{
-       //todo:SYNTAX ERROR
+       cout << "SYNTAX ERROR" << endl;
+       return;
    }
 //   Expression *exp = parseExp(scanner);
 //   int value = exp->eval(state);

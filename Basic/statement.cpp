@@ -36,13 +36,12 @@ void INPUT_statement::execute(EvalState &state) {
     cout << "?";
     int var_value;
     string token; TokenType token_type; TokenScanner scanner;
-    scanner.scanNumbers(); scanner.ignoreWhitespace();
+    scanner.ignoreWhitespace(); scanner.scanNumbers();
     while(true){
         scanner.setInput(getLine());
         if(!scanner.hasMoreTokens()){cout << "INVALID NUMBER" << endl << "?";continue;}
         token = scanner.nextToken();token_type = scanner.getTokenType(token);
         if(token_type != NUMBER || scanner.hasMoreTokens()){cout << "INVALID NUMBER" << endl << "?";continue;}
-        cout << endl;
         var_value = stringToInteger(token);
         state.setValue(var_name,var_value);
         break;
@@ -54,29 +53,19 @@ PRINT_statement::~PRINT_statement(){
     delete exp;
 }
 void PRINT_statement::execute(EvalState &state) {
-    try {
-        cout << exp->eval(state) <<endl;
-    } catch (...) {
-        cout << "VARIABLE NOT DEFINED" << endl;
-        //todo:退出map的遍历
-    }
+    cout << exp->eval(state) <<endl;
 }
 
 END_statement::END_statement() = default;
 END_statement::~END_statement() = default;
 void END_statement::execute(EvalState &state) {
-    //todo:退出map的遍历
-}//todo
+    error("[tag] end");
+}
 
 LET_statement::LET_statement(Expression *exp):exp(exp){}
 LET_statement::~LET_statement(){
     delete exp;
 }
 void LET_statement::execute(EvalState &state) {
-    try{
-        exp->eval(state);
-    } catch (...) {
-        cout << "VARIABLE NOT DEFINED" << endl;
-        //todo:变量未定义 然后终止运行 退出map遍历但是state并不清空
-    }
+    exp->eval(state);
 }
