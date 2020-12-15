@@ -77,7 +77,7 @@ void processLine(string line, Program & program, EvalState & state) {
            return;
        }
        try{
-           Statement *stmt = parseStmt(scanner);
+           Statement *stmt = parseStmt(scanner,line);
            program.addSourceLine(lineNumber,line); program.setParsedStatement(lineNumber,stmt);
            return;
        } catch (...) {
@@ -123,7 +123,7 @@ void processLine(string line, Program & program, EvalState & state) {
            scanner.setInput(line);
            Statement *stmt = nullptr;
            try {
-               stmt = parseStmt(scanner); // 动态对象 需要delete
+               stmt = parseStmt(scanner,line); // 动态对象 需要delete
            } catch (...) {
                cout << "SYNTAX ERROR" << endl;
                return;
