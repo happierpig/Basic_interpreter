@@ -111,6 +111,7 @@ void processLine(string line, Program & program, EvalState & state) {
        else if(token == "CLEAR"){
            if(scanner.hasMoreTokens()){cout << "SYNTAX ERROR" << endl;return;}
            program.clear();
+           state.clear();
            return;
        }
        else if(token == "QUIT"){

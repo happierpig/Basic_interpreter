@@ -33,15 +33,15 @@ void REM_statement::execute(EvalState &state) {}
 INPUT_statement::INPUT_statement(string &x) {var_name = x;}
 INPUT_statement::~INPUT_statement() = default;
 void INPUT_statement::execute(EvalState &state) {
-    cout << "?";
+    cout << " ? ";
     int var_value;
     string token; TokenType token_type; TokenScanner scanner;
     scanner.ignoreWhitespace(); scanner.scanNumbers();
     while(true){
         scanner.setInput(getLine());
-        if(!scanner.hasMoreTokens()){cout << "INVALID NUMBER" << endl << "?";continue;}
+        if(!scanner.hasMoreTokens()){cout << "INVALID NUMBER" << endl << " ? ";continue;}
         token = scanner.nextToken();token_type = scanner.getTokenType(token);
-        if(token_type != NUMBER || scanner.hasMoreTokens()){cout << "INVALID NUMBER" << endl << "?";continue;}
+        if(token_type != NUMBER || scanner.hasMoreTokens()){cout << "INVALID NUMBER" << endl << " ? ";continue;}
         var_value = stringToInteger(token);
         state.setValue(var_name,var_value);
         break;
