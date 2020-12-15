@@ -69,3 +69,23 @@ LET_statement::~LET_statement(){
 void LET_statement::execute(EvalState &state) {
     exp->eval(state);
 }
+
+GOTO_statement::GOTO_statement(int a):toLineNumber(a){}
+GOTO_statement::~GOTO_statement() = default;
+void GOTO_statement::execute(EvalState &state) {
+    error(integerToString(toLineNumber));
+}
+
+IF_statement::IF_statement(string &a, Expression *b, Expression *c, GOTO_statement *d):op(a),first(b),second(c),go_to(d){}
+IF_statement::~IF_statement(){
+    delete first;delete second;delete go_to;
+}
+void IF_statement::execute(EvalState &state) {
+    bool flag;
+    int var_first = first->eval(state),var_second = second->eval(state);
+    if(op == "=") flag = (var_second == var_first);
+    if(op == "<") flag = (var_first < var_second);
+    if(op == ">") flag = (var_first > var_second);
+    if(!flag)return;
+    else go_to->execute(state);
+}

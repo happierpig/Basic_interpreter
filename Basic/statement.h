@@ -115,4 +115,29 @@ public:
 private:
     Expression * exp;
 };
+
+class GOTO_statement: public Statement{
+public:
+
+    explicit GOTO_statement(int a);
+    ~GOTO_statement() override;
+    void execute(EvalState & state) override;
+
+private:
+    int toLineNumber;
+};
+
+class IF_statement: public Statement{
+public:
+    IF_statement(string &a,Expression *b,Expression *c,GOTO_statement * d);
+    ~IF_statement() override;
+    void execute(EvalState & state) override;
+
+private:
+    string op;
+    //todo:一定要记得delete
+    Expression *first;
+    Expression *second;
+    GOTO_statement * go_to;
+};
 #endif

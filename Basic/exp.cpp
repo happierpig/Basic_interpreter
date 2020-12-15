@@ -125,7 +125,10 @@ int CompoundExp::eval(EvalState & state) {
    if (op == "+") return left + right;
    if (op == "-") return left - right;
    if (op == "*") return left * right;
-   if (op == "/") return left / right;
+   if (op == "/"){
+       if(right == 0){error("[tag] zero");}
+       return left / right;
+   }
    error("Illegal operator in expression");
    return 0;
 }

@@ -60,13 +60,18 @@ void processLine(string line, Program & program, EvalState & state) {
    scanner.ignoreWhitespace();
    scanner.scanNumbers();
    scanner.setInput(line); // 输入流已设置    值传入
-   //todo:
    string token; TokenType token_type;
    if(scanner.hasMoreTokens()) token = scanner.nextToken();
    else return;
    token_type = scanner.getTokenType(token);
    if(token_type == NUMBER){
-       int lineNumber = stringToInteger(token);
+       int lineNumber;
+       try{
+           lineNumber = stringToInteger(token);
+       } catch (...) {
+           cout << "SYNTAX ERROR" << endl;
+           return;
+       }
        if(!scanner.hasMoreTokens()){
            program.removeSourceLine(lineNumber);
            return;
@@ -87,8 +92,15 @@ void processLine(string line, Program & program, EvalState & state) {
            } catch (ErrorException &ex) {
                if(ex.getMessage() == "[tag] end") {
                    return;
+               }else if(ex.getMessage() == "[tag] zero") {
+                   cout << "DIVIDE BY ZERO" << endl;
+                   return;
+               }else if(ex.getMessage() == "[tag] goto"){
+                   cout << "LINE NUMBER ERROR" << endl;
+                   return;
                }else{
-                   cout << "VARIABLE NOT DEFINED" << endl; return;
+                   cout << "VARIABLE NOT DEFINED" << endl;
+                   return;
                }
            }
        }
@@ -108,7 +120,27 @@ void processLine(string line, Program & program, EvalState & state) {
            //todo
        }
        else if(token == "LET" || token == "PRINT" || token == "INPUT"){
-           //todo
+           scanner.setInput(line);
+           Statement *stmt = nullptr;
+           try {
+               stmt = parseStmt(scanner); // 动态对象 需要delete
+           } catch (...) {
+               cout << "SYNTAX ERROR" << endl;
+               return;
+           }
+           try {
+               stmt->execute(state);
+               delete stmt;
+           } catch (ErrorException &ex) {
+               delete stmt;
+               if(ex.getMessage() == "[tag] zero"){
+                   cout << "DIVIDE BY ZERO" << endl;
+                   return;
+               }else{
+                   cout << "VARIABLE NOT DEFINED" << endl;
+                   return;
+               }
+           }
        }else{
            cout << "SYNTAX ERROR" << endl;
            return;
@@ -117,8 +149,4 @@ void processLine(string line, Program & program, EvalState & state) {
        cout << "SYNTAX ERROR" << endl;
        return;
    }
-//   Expression *exp = parseExp(scanner);
-//   int value = exp->eval(state);
-//   cout << value << endl;
-//   delete exp;
 }

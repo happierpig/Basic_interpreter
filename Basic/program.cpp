@@ -11,6 +11,9 @@
 #include <string>
 #include "program.h"
 #include "statement.h"
+#include "../StanfordCPPLib/error.h"
+#include "../StanfordCPPLib/tokenscanner.h"
+
 using namespace std;
 
 Program::Program() = default;
@@ -91,7 +94,22 @@ void Program::runProgram(EvalState &state) {
     if(this->LineTable.empty()) return;
     auto it = this->LineTable.begin();
     while(it != this->LineTable.end()){
-        (it->second.stmt)->execute(state);
-        ++it;
+        try {
+            (it->second.stmt)->execute(state);
+            ++it;
+        } catch (ErrorException &ex) {
+            TokenScanner scanner;
+            if(scanner.getTokenType(ex.getMessage()) == NUMBER){
+                int toLineNumber = stringToInteger(ex.getMessage());
+                if(this->isContained(toLineNumber)){
+                    it = this->LineTable.find(toLineNumber);
+                    continue;
+                }else{
+                    error("[tag] goto");
+                }
+            }else{
+                error(ex.getMessage());
+            }
+        }
     }
 }

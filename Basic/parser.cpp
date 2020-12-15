@@ -26,7 +26,7 @@ using namespace std;
 
 Expression *parseExp(TokenScanner & scanner) {
    Expression *exp = readE(scanner);
-   if (scanner.hasMoreTokens()) {
+   if (scanner.hasMoreTokens()) {///不能用于在IF时读入
        delete exp;///有待验证
       error("parseExp: Found extra token: " + scanner.nextToken());
    }
@@ -69,7 +69,7 @@ Expression *readT(TokenScanner & scanner) {
    string token = scanner.nextToken();
    TokenType type = scanner.getTokenType(token);
    if (type == WORD) return new IdentifierExp(token);
-   if (type == NUMBER) return new ConstantExp(stringToInteger(token));
+   if (type == NUMBER) return new ConstantExp(stringToInteger(token)); // 自动报错
    if (token != "(") error("Illegal term in expression");
    Expression *exp = readE(scanner);
    if (scanner.nextToken() != ")") {
@@ -122,9 +122,42 @@ Statement *parseStmt(TokenScanner & scanner){
         if((((CompoundExp *)exp)->getLHS())->getType() != IDENTIFIER){delete exp;error("[Warning] SYNTAX ERROR");}
         return new LET_statement(exp);
     }else if(token == "GOTO"){
-        //todo:
+        if(!scanner.hasMoreTokens()){error("[Warning] SYNTAX ERROR");}
+        token = scanner.nextToken();token_type = scanner.getTokenType(token);
+        if(token_type != NUMBER){error("[Warning] SYNTAX ERROR");}
+        if(scanner.hasMoreTokens()){error("[Warning] SYNTAX ERROR");}
+        int toLineNumber;
+        try{
+            toLineNumber = stringToInteger(token);
+        } catch (...) {
+            error("[Warning] SYNTAX ERROR");
+        }
+        return new GOTO_statement(toLineNumber);
     }else if(token == "IF"){
-        //todo:
+        if(!scanner.hasMoreTokens()){error("[Warning] SYNTAX ERROR");}
+        string op;Expression * first;Expression * second;GOTO_statement * go_to;
+        first = readE(scanner);
+        op = scanner.nextToken();
+        if(op != "<" && op != ">" && op != "="){delete first;error("[Warning] SYNTAX ERROR");}
+        try{
+            second = readE(scanner);
+        } catch (...) {
+            delete first;error("[Warning] SYNTAX ERROR");
+        }
+        token = scanner.nextToken();
+        if(token != "THEN"){delete first;delete second;error("[Warning] SYNTAX ERROR");}
+        token = scanner.nextToken();token_type = scanner.getTokenType(token);
+        if(token_type != NUMBER){delete first;delete second;error("[Warning] SYNTAX ERROR");}
+        if(scanner.hasMoreTokens()){delete first;delete second;error("[Warning] SYNTAX ERROR");}
+        int toLineNumber;
+        try{
+            toLineNumber = stringToInteger(token);
+        } catch (...) {
+            delete first;delete second;
+            error("[Warning] SYNTAX ERROR");
+        }
+        go_to = new GOTO_statement(toLineNumber);
+        return new IF_statement(op,first,second,go_to);
     }
     error("[Warning] SYNTAX ERROR");
 }
