@@ -31,7 +31,7 @@ void processLine(string line, Program & program, EvalState & state);
 int main() {
    EvalState state;
    Program program;
-   cout << "Stub implementation of BASIC" << endl;
+//   cout << "Stub implementation of BASIC" << endl;
    while (true) {
       try {
          processLine(getLine(), program, state);

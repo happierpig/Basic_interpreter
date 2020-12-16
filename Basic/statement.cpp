@@ -32,7 +32,7 @@ void REM_statement::execute(EvalState &state) {}
 
 INPUT_statement::INPUT_statement(string &x) {var_name = x;}
 INPUT_statement::~INPUT_statement() = default;
-void INPUT_statement::execute(EvalState &state) {
+void INPUT_statement::execute(EvalState &state) { // " ? "
     cout << " ? ";
     int var_value;
     string token; TokenType token_type; TokenScanner scanner;
