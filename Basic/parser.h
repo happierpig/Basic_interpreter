@@ -57,4 +57,6 @@ Expression *readT(TokenScanner & scanner);
 int precedence(std::string token);
 
 Statement *parseStmt(TokenScanner & scanner,string line);
+
+bool checkLegal(string token);
 #endif

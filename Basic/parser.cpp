@@ -120,6 +120,7 @@ Statement *parseStmt(TokenScanner & scanner,string line){
         if(exp->getType() != COMPOUND){delete exp;error("[Warning] SYNTAX ERROR");}
         if(((CompoundExp *)exp)->getOp() != "="){delete exp;error("[Warning] SYNTAX ERROR");}
         if((((CompoundExp *)exp)->getLHS())->getType() != IDENTIFIER){delete exp;error("[Warning] SYNTAX ERROR");}
+        if(!checkLegal(((IdentifierExp *)(((CompoundExp *)exp)->getLHS()))->getName())){delete exp;error("[Warning] SYNTAX ERROR");}
         return new LET_statement(exp);
     }else if(token == "GOTO"){
         if(!scanner.hasMoreTokens()){error("[Warning] SYNTAX ERROR");}
@@ -197,4 +198,11 @@ Statement *parseStmt(TokenScanner & scanner,string line){
         }
     }
     error("[Warning] SYNTAX ERROR");
+}
+
+bool checkLegal(string token){
+    if(token == "LET" || token == "REM" || token == "PRINT" || token == "END" || token == "IF" ||
+    token == "THEN" || token == "GOTO" || token == "RUN" || token == "LIST" || token == "CLEAR" ||
+    token == "QUIT" || token == "HELP"){return false;}
+    else return true;
 }

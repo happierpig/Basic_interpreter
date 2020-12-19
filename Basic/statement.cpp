@@ -32,7 +32,7 @@ void REM_statement::execute(EvalState &state) {}
 
 INPUT_statement::INPUT_statement(string &x) {var_name = x;}
 INPUT_statement::~INPUT_statement() = default;
-void INPUT_statement::execute(EvalState &state) { // " ? "
+void INPUT_statement::execute(EvalState &state) {
     cout << " ? ";
     int var_value;
     string token; TokenType token_type; TokenScanner scanner;
@@ -41,10 +41,27 @@ void INPUT_statement::execute(EvalState &state) { // " ? "
         scanner.setInput(getLine());
         if(!scanner.hasMoreTokens()){cout << "INVALID NUMBER" << endl << " ? ";continue;}
         token = scanner.nextToken();token_type = scanner.getTokenType(token);
-        if(token_type != NUMBER || scanner.hasMoreTokens()){cout << "INVALID NUMBER" << endl << " ? ";continue;}
-        var_value = stringToInteger(token);
-        state.setValue(var_name,var_value);
-        break;
+        if(token != "-") {
+            if (token_type != NUMBER || scanner.hasMoreTokens()) {cout << "INVALID NUMBER" << endl << " ? ";continue;}
+            try {
+                var_value = stringToInteger(token);
+            } catch (...) {
+                cout << "INVALID NUMBER" << endl << " ? ";continue;
+            }
+            state.setValue(var_name, var_value);
+            break;
+        }else{
+            if(!scanner.hasMoreTokens()){cout << "INVALID NUMBER" << endl << " ? ";continue;}
+            token = scanner.nextToken();token_type = scanner.getTokenType(token);
+            if (token_type != NUMBER || scanner.hasMoreTokens()) {cout << "INVALID NUMBER" << endl << " ? ";continue;}
+            try {
+                var_value = stringToInteger(token);
+            } catch (...) {
+                cout << "INVALID NUMBER" << endl << " ? ";continue;
+            }
+            state.setValue(var_name, -var_value);
+            break;
+        }
     }
 }
 
