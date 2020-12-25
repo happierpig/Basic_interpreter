@@ -1,7 +1,5 @@
 /Test/
-/CMakeLists.txt
 /makefile-for-judge
-/StanfordCPPLib/
 /Demo/
 /cmake-build-debug/
 /.idea/modules.xml
