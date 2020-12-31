@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.17)
-project(Basic_interpreter)
+project(code)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Basic_interpreter Basic/Basic.cpp
+add_executable(code Basic/Basic.cpp
         Basic/evalstate.h
         Basic/evalstate.cpp
         Basic/exp.h
